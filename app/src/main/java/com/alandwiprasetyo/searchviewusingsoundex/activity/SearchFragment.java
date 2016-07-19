@@ -59,7 +59,6 @@ public class SearchFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
         swipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_refresh_layout);
         wordList = DummyData.dummy();
-        Log.e("TAG", "onCreateView: "+wordList.size() );
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(getActivity());
