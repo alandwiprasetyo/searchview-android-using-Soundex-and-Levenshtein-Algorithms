@@ -5,6 +5,7 @@ package com.alandwiprasetyo.searchviewusingsoundex.adapter;
  */
 import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +25,10 @@ import java.util.List;
 /**
  * Created by root on 26/12/15.
  */
+@SuppressWarnings("ALL")
 public class SwipeListAdapter extends RecyclerView
         .Adapter<DataObjectHolder> implements Filterable {
+    private static final String TAG = "INFO";
     private Activity activity;
     private List<Word> orig;
     private List<Word> wordList = new ArrayList<>();
@@ -47,15 +50,21 @@ public class SwipeListAdapter extends RecyclerView
             protected FilterResults performFiltering(CharSequence constraint) {
                 final FilterResults oReturn = new FilterResults();
                 final ArrayList<Word> results = new ArrayList<>();
+                Log.e(TAG, "=====================");
                 if (orig == null)
                     orig = wordList;
                 if (constraint != null) {
                     if (orig != null && orig.size() > 0) {
+                        String soudex = Soundex.soundex(constraint.toString());
                         for (final Word g : orig) {
-                            if (g.value.contains(Soundex.soundex(constraint.toString())))
+                            if (Soundex.soundex(g.name).contains(soudex)){
+                                g.value = "Soundex";
                                 results.add(g);
-                            else if(Levenshtein.getLevenshteinDistance(g.name.toLowerCase(),constraint.toString()) < 5)
+                            }
+                            else if(Levenshtein.getLevenshteinDistance(g.name.toLowerCase(),constraint.toString()) < 5){
+                                g.value = "Levenshtein";
                                 results.add(g);
+                            }
                             else if (g.name.toLowerCase().contains(constraint.toString()))
                                 results.add(g);
                         }
@@ -92,6 +101,7 @@ public class SwipeListAdapter extends RecyclerView
     public void onBindViewHolder(DataObjectHolder holder, int position) {
         holder.label.setText(wordList.get(position).name);
         holder.value.setText(wordList.get(position).value);
+
     }
 
     public void addItem(Word dataObj, int index) {
